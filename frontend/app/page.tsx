@@ -48,9 +48,9 @@ export default async function Home() {
         <Documents content={content} documents={documents} />
         <References content={content} references={references} />
         <Testimonials testimonials={testimonials} />
-        <Carte {...mapProps} />
         {igPosts.length > 0 && <InstagramFeed content={content} posts={igPosts} />}
         <Contact content={content} />
+        <Carte {...mapProps} />
       </main>
       <Footer content={content} />
       <ScrollReveal />
