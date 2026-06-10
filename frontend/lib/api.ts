@@ -40,6 +40,14 @@ export async function fetchTestimonials() {
   } catch { return []; }
 }
 
+export async function fetchPosts() {
+  try {
+    const res = await fetch(`${API_URL}/api/posts`, { next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    return res.json();
+  } catch { return []; }
+}
+
 export async function fetchInstagram() {
   try {
     const res = await fetch(`${API_URL}/api/instagram?limit=9`, { next: { revalidate: 300 } });

@@ -28,11 +28,19 @@ export default async function MentionsLegales() {
 
           <section>
             <h2 className="text-lg font-800 mb-3" style={{ color: 'var(--color-primary)' }}>1. Éditeur du site</h2>
-            <p><strong>Collectif {name}</strong><br />
-            Structure : collectif informel (non déclaré en tant qu'association loi 1901)<br />
-            Localisation : Lyon, France<br />
-            Contact : <a href={`mailto:${email}`} className="underline" style={{ color: 'var(--color-primary)' }}>{email}</a></p>
-            <p className="mt-2">Directeur de la publication : le collectif {name}</p>
+            <p>
+              <strong>Collectif {name}</strong><br />
+              {c['legal.association_address'] ? (
+                <>Siège : {c['legal.association_address']}<br /></>
+              ) : null}
+              {c['legal.rna'] ? (
+                <>N° RNA : {c['legal.rna']}<br /></>
+              ) : null}
+              Contact : <a href={`mailto:${email}`} className="underline" style={{ color: 'var(--color-primary)' }}>{email}</a>
+            </p>
+            <p className="mt-2">
+              Directeur·ice de la publication : {c['legal.director_name'] || `le collectif ${name}`}
+            </p>
           </section>
 
           <section>

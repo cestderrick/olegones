@@ -29,6 +29,16 @@ export interface Reference {
   order_num: number;
 }
 
+export interface Post {
+  id: number;
+  title: string;
+  excerpt?: string;
+  content?: string;
+  image_url?: string;
+  visible: boolean;
+  published_at: string;
+}
+
 export interface InstagramPost {
   id: number;
   image_url: string;

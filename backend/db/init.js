@@ -51,6 +51,18 @@ const DEFAULT_CONTENT = {
   'contact.text': 'Une question sur nos ateliers ? Envie de participer ou d\'organiser un événement dans votre ville ? Contactez-nous !',
 
   'footer.text': `© ${new Date().getFullYear()} Olegones — Collectif lyonnais pour la contraception masculine`,
+
+  // Mentions légales
+  'legal.director_name': '',
+  'legal.association_address': '',
+  'legal.rna': '',
+
+  // Carte
+  'map.venue_name': 'Bieristan',
+  'map.venue_address': 'Villeurbanne, France',
+  'map.venue_lat': '45.7669',
+  'map.venue_lng': '4.8862',
+  'map.zone_radius': '15000',
 };
 
 function loadDB() {
@@ -65,12 +77,14 @@ function saveDB(data) {
 // Init or load
 let _db = loadDB();
 if (!_db) {
-  _db = { content: { ...DEFAULT_CONTENT }, events: [], documents: [], refs: [], instagram: [], testimonials: [], _seq: { events: 0, documents: 0, refs: 0, instagram: 0, testimonials: 0 } };
+  _db = { content: { ...DEFAULT_CONTENT }, events: [], documents: [], refs: [], instagram: [], testimonials: [], posts: [], _seq: { events: 0, documents: 0, refs: 0, instagram: 0, testimonials: 0, posts: 0 } };
   saveDB(_db);
 }
-// Migrate: add testimonials if missing
+// Migrations
 if (!_db.testimonials) _db.testimonials = [];
 if (!_db._seq.testimonials) _db._seq.testimonials = 0;
+if (!_db.posts) _db.posts = [];
+if (!_db._seq.posts) _db._seq.posts = 0;
 
 // Ensure all default content keys exist
 for (const [k, v] of Object.entries(DEFAULT_CONTENT)) {

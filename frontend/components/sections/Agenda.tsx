@@ -1,4 +1,5 @@
 import { Event } from '@/lib/types';
+import ShareButtons from '@/components/ShareButtons';
 
 function formatDate(d: string) {
   return new Date(d + 'T00:00:00').toLocaleDateString('fr-FR', {
@@ -121,6 +122,12 @@ export default function Agenda({ content, events }: { content: Record<string, st
                         S'inscrire →
                       </a>
                     )}
+                    <ShareButtons
+                      title={event.title}
+                      date={formatDate(event.date)}
+                      location={event.location}
+                      link={event.link}
+                    />
                   </div>
                 </div>
               </div>

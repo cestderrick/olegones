@@ -301,6 +301,7 @@
       <a href="#" onclick="showPage('references',this)"><span class="icon">📚</span> Références</a>
       <a href="#" onclick="showPage('instagram',this)"><span class="icon">📸</span> Instagram</a>
       <a href="#" onclick="showPage('testimonials',this)"><span class="icon">⭐</span> Témoignages</a>
+      <a href="#" onclick="showPage('posts',this)"><span class="icon">📰</span> Actualités</a>
       <a href="#" onclick="showPage('media',this)"><span class="icon">🖼️</span> Médiathèque</a>
     </nav>
     <div class="sidebar-footer">
@@ -439,6 +440,56 @@
         </div>
       </div>
 
+      <div class="card">
+        <h3>Mentions légales
+          <span class="tooltip-wrap" style="margin-left:8px;cursor:help" title="Ces informations sont obligatoires en France pour tout site web. Renseignez-les pour être en conformité légale.">💡</span>
+        </h3>
+        <label>
+          Directeur·ice de la publication
+          <span class="tooltip-wrap" title="La personne physique responsable du contenu publié (un membre du collectif). Obligatoire légalement." style="cursor:help;margin-left:4px">💡</span>
+        </label>
+        <input type="text" data-key="legal.director_name" placeholder="Prénom Nom">
+        <label>
+          Adresse du siège social
+          <span class="tooltip-wrap" title="Obligatoire. Si pas de local fixe, l'adresse personnelle d'un membre fait office de siège. Elle apparaît dans les mentions légales mais n'est pas affichée sur le site public." style="cursor:help;margin-left:4px">💡</span>
+        </label>
+        <input type="text" data-key="legal.association_address" placeholder="12 rue de la Paix, 69001 Lyon">
+        <label>
+          Numéro RNA (si association déclarée)
+          <span class="tooltip-wrap" title="Numéro de déclaration en préfecture (ex: W691234567). Laissez vide si le collectif n'est pas formellement déclaré." style="cursor:help;margin-left:4px">💡</span>
+        </label>
+        <input type="text" data-key="legal.rna" placeholder="W691234567 (optionnel)">
+      </div>
+
+      <div class="card">
+        <h3>Carte — Lieu des ateliers</h3>
+        <div class="grid-2">
+          <div>
+            <label>Nom du lieu</label>
+            <input type="text" data-key="map.venue_name" placeholder="Bieristan">
+            <label>Adresse affichée</label>
+            <input type="text" data-key="map.venue_address" placeholder="Villeurbanne, France">
+            <label>
+              Rayon zone d'activité (mètres)
+              <span class="tooltip-wrap" title="Le cercle violet sur la carte. 15000 = 15km autour du lieu." style="cursor:help;margin-left:4px">💡</span>
+            </label>
+            <input type="number" data-key="map.zone_radius" placeholder="15000">
+          </div>
+          <div>
+            <label>
+              Latitude
+              <span class="tooltip-wrap" title="Coordonnée GPS latitude. Trouvez-la sur maps.google.com → clic droit sur le lieu → copier les coordonnées." style="cursor:help;margin-left:4px">💡</span>
+            </label>
+            <input type="text" data-key="map.venue_lat" placeholder="45.7669">
+            <label>Longitude</label>
+            <input type="text" data-key="map.venue_lng" placeholder="4.8862">
+            <p style="font-size:12px;color:var(--muted);margin-top:8px">
+              💡 Pour trouver les coordonnées : <a href="https://maps.google.com" target="_blank" style="color:var(--primary)">maps.google.com</a> → clic droit sur le lieu → "Plus d'infos sur cet endroit"
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div class="save-bar">
         <button class="btn btn-primary" onclick="saveContent()">💾 Enregistrer tous les textes</button>
         <span id="content-msg"></span>
@@ -570,6 +621,27 @@
       <div class="card">
         <h3>Posts dans le carrousel</h3>
         <div id="ig-grid" class="media-grid"></div>
+      </div>
+    </div>
+
+    <!-- Actualités -->
+    <div id="page-posts" class="page">
+      <h2>Actualités</h2>
+      <p class="page-desc">Gérer les articles publiés sur le site.</p>
+      <div class="card" style="background:linear-gradient(135deg,#ede9fe,#f1fcf6);border-color:#7c3aed">
+        <p style="font-size:14px;color:#5b21b6;font-weight:600">🔍 <strong>Pourquoi les actualités sont importantes pour le SEO</strong><br>
+        Publier régulièrement du contenu frais indique à Google que votre site est actif. Chaque article sur la contraception masculine, vos ateliers ou votre collectif améliore votre visibilité locale sur des requêtes comme <em>"contraception masculine Lyon"</em>. Idéalement : 1 article par mois minimum.</p>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button class="btn btn-accent" onclick="openPostModal()">+ Nouvel article</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="posts-table">
+            <thead><tr><th>Titre</th><th>Date</th><th>Visible</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -713,6 +785,41 @@
   </div>
 </div>
 
+<!-- Post Modal -->
+<div class="modal-overlay" id="post-modal">
+  <div class="modal">
+    <h3 id="post-modal-title">Nouvel article</h3>
+    <input type="hidden" id="post-id">
+    <label>Titre <span style="color:var(--accent)">*</span></label>
+    <input type="text" id="post-title" placeholder="Compte-rendu atelier — Mars 2025">
+    <label>Extrait (affiché sur le site)</label>
+    <textarea id="post-excerpt" rows="3" placeholder="Courte description visible sur la page d'accueil..."></textarea>
+    <label>Image (URL ou upload)</label>
+    <div class="upload-zone" onclick="document.getElementById('post-img-input').click()" style="padding:16px">
+      <div>📷 Uploader une image</div>
+    </div>
+    <input type="file" id="post-img-input" accept="image/*" style="display:none" onchange="uploadPostImage(this)">
+    <input type="url" id="post-image-url" placeholder="Ou coller une URL d'image" style="margin-top:8px">
+    <div class="grid-2" style="margin-top:4px">
+      <div>
+        <label>Date de publication</label>
+        <input type="date" id="post-date">
+      </div>
+      <div>
+        <label>Visible sur le site</label>
+        <select id="post-visible">
+          <option value="true">✅ Oui</option>
+          <option value="false">🚫 Non — brouillon</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('post-modal')">Annuler</button>
+      <button class="btn btn-accent" onclick="savePost()">Publier</button>
+    </div>
+  </div>
+</div>
+
 <!-- Testimonial Modal -->
 <div class="modal-overlay" id="testimonial-modal">
   <div class="modal">
@@ -807,6 +914,7 @@ function showPage(name, el) {
   if (name === 'documents') loadDocs();
   if (name === 'references') loadRefs();
   if (name === 'instagram') loadIg();
+  if (name === 'posts') loadPosts();
   if (name === 'testimonials') loadTestimonials();
   if (name === 'media') loadMedia();
   return false;
@@ -1109,6 +1217,76 @@ async function deleteIgPost(id) {
   if (!confirm('Retirer ce post ?')) return;
   await api('DELETE', '/instagram/' + id);
   loadIg();
+}
+
+// Posts
+async function loadPosts() {
+  const posts = await api('GET', '/posts/all');
+  const tbody = document.querySelector('#posts-table tbody');
+  tbody.innerHTML = posts.length ? posts.map(p => `
+    <tr>
+      <td>
+        ${p.image_url ? `<img src="${p.image_url}" style="width:40px;height:30px;object-fit:cover;border-radius:4px;vertical-align:middle;margin-right:8px">` : ''}
+        <strong>${p.title}</strong>
+        ${p.excerpt ? `<br><small style="color:var(--muted)">${p.excerpt.slice(0,80)}…</small>` : ''}
+      </td>
+      <td style="white-space:nowrap">${formatDate(p.published_at ? p.published_at.slice(0,10) : '')}</td>
+      <td>
+        <button class="btn btn-sm ${p.visible !== false ? 'btn-ghost' : 'btn-danger'}" onclick="togglePostVisible(${p.id}, ${p.visible !== false})">
+          ${p.visible !== false ? '✅ Visible' : '🚫 Brouillon'}
+        </button>
+      </td>
+      <td style="display:flex;gap:8px;white-space:nowrap">
+        <button class="btn btn-sm btn-ghost" onclick="editPost(${JSON.stringify(p).replace(/"/g,'&quot;')})">Modifier</button>
+        <button class="btn btn-sm btn-danger" onclick="deletePost(${p.id})">Supprimer</button>
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:32px">Aucun article — publiez votre premier ! 🔍 Rappel : les actualités boostent votre référencement.</td></tr>';
+}
+
+function openPostModal(p) {
+  document.getElementById('post-modal-title').textContent = p ? 'Modifier l\'article' : 'Nouvel article';
+  document.getElementById('post-id').value = p?.id || '';
+  document.getElementById('post-title').value = p?.title || '';
+  document.getElementById('post-excerpt').value = p?.excerpt || '';
+  document.getElementById('post-image-url').value = p?.image_url || '';
+  document.getElementById('post-date').value = p?.published_at ? p.published_at.slice(0,10) : new Date().toISOString().slice(0,10);
+  document.getElementById('post-visible').value = String(p?.visible !== false ? 'true' : 'false');
+  document.getElementById('post-modal').classList.add('open');
+}
+function editPost(p) { openPostModal(p); }
+
+async function uploadPostImage(input) {
+  const url = await uploadFile(input.files[0]);
+  if (url) document.getElementById('post-image-url').value = url;
+}
+
+async function togglePostVisible(id, current) {
+  await api('PUT', '/posts/' + id, { visible: !current });
+  loadPosts();
+}
+
+async function savePost() {
+  const id = document.getElementById('post-id').value;
+  const title = document.getElementById('post-title').value;
+  if (!title) return alert('Le titre est obligatoire');
+  const data = {
+    title,
+    excerpt: document.getElementById('post-excerpt').value,
+    image_url: document.getElementById('post-image-url').value,
+    published_at: document.getElementById('post-date').value,
+    visible: document.getElementById('post-visible').value === 'true',
+  };
+  if (id) await api('PUT', '/posts/' + id, data);
+  else await api('POST', '/posts', data);
+  closeModal('post-modal');
+  loadPosts();
+}
+
+async function deletePost(id) {
+  if (!confirm('Supprimer cet article ?')) return;
+  await api('DELETE', '/posts/' + id);
+  loadPosts();
 }
 
 // Testimonials
