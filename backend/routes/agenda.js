@@ -4,26 +4,22 @@ const { db } = require('../db/init');
 const { requireAuth } = require('../middleware/auth');
 
 router.get('/', (req, res) => {
-  const events = db.prepare('SELECT * FROM events ORDER BY date ASC').all();
+  const events = db.getAll('events', (a, b) => a.date.localeCompare(b.date));
   res.json(events);
 });
 
 router.post('/', requireAuth, (req, res) => {
-  const { title, date, time, location, description, link, spots } = req.body;
-  const r = db.prepare('INSERT INTO events (title, date, time, location, description, link, spots) VALUES (?, ?, ?, ?, ?, ?, ?)')
-    .run(title, date, time, location, description, link, spots);
-  res.json({ id: r.lastInsertRowid });
+  const row = db.insert('events', req.body);
+  res.json({ id: row.id });
 });
 
 router.put('/:id', requireAuth, (req, res) => {
-  const { title, date, time, location, description, link, spots } = req.body;
-  db.prepare('UPDATE events SET title=?, date=?, time=?, location=?, description=?, link=?, spots=? WHERE id=?')
-    .run(title, date, time, location, description, link, spots, req.params.id);
+  db.update('events', parseInt(req.params.id), req.body);
   res.json({ success: true });
 });
 
 router.delete('/:id', requireAuth, (req, res) => {
-  db.prepare('DELETE FROM events WHERE id = ?').run(req.params.id);
+  db.delete('events', parseInt(req.params.id));
   res.json({ success: true });
 });
 

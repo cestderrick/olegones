@@ -603,7 +603,7 @@
     <textarea id="event-desc" rows="3" placeholder="Atelier ouvert à toutes et tous..."></textarea>
     <div class="grid-2">
       <div><label>Nombre de places</label><input type="number" id="event-spots" placeholder="12"></div>
-      <div><label>Lien d'inscription</label><input type="url" id="event-link" placeholder="https://helloasso.com/..."></div>
+      <div><label>Lien Luma (inscription)</label><input type="url" id="event-link" placeholder="https://lu.ma/..."></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('event-modal')">Annuler</button>
@@ -649,8 +649,9 @@
 
 <div class="modal-overlay" id="ref-modal">
   <div class="modal">
-    <h3>Référence</h3>
+    <h3 id="ref-modal-title">Référence</h3>
     <input type="hidden" id="ref-id">
+
     <div class="grid-2">
       <div>
         <label>Titre</label>
@@ -659,22 +660,31 @@
         <input type="text" id="ref-author" placeholder="Prénom Nom">
         <label>Type</label>
         <select id="ref-type">
-          <option value="book">Livre</option>
-          <option value="game">Jeu de société</option>
-          <option value="other">Autre</option>
+          <option value="book">📖 Livre / BD</option>
+          <option value="game">🎲 Jeu de société</option>
+          <option value="other">🔗 Autre</option>
         </select>
-      </div>
-      <div>
-        <label>Image couverture (URL)</label>
-        <input type="url" id="ref-image" placeholder="https://...">
         <label>Lien d'achat / info</label>
         <input type="url" id="ref-link" placeholder="https://...">
-        <label>Ordre</label>
+        <label>Ordre d'affichage</label>
         <input type="number" id="ref-order" value="0">
       </div>
+      <div>
+        <label>Image couverture</label>
+        <div class="upload-zone" onclick="document.getElementById('ref-img-input').click()" style="padding:16px">
+          <div style="font-size:20px">🖼️</div>
+          <div style="font-size:13px">Uploader une image</div>
+        </div>
+        <input type="file" id="ref-img-input" accept="image/*" style="display:none" onchange="uploadRefImage(this)">
+        <label style="margin-top:8px">Ou coller une URL</label>
+        <input type="url" id="ref-image" placeholder="https://...">
+        <img id="ref-img-preview" style="display:none;max-width:100%;max-height:140px;object-fit:contain;border-radius:8px;margin-top:8px;border:1px solid var(--border)">
+      </div>
     </div>
+
     <label>Description</label>
     <textarea id="ref-desc" rows="3" placeholder="Pourquoi on le recommande..."></textarea>
+
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('ref-modal')">Annuler</button>
       <button class="btn btn-accent" onclick="saveRef()">Enregistrer</button>
@@ -948,6 +958,7 @@ async function loadRefs() {
 }
 
 function openRefModal(r) {
+  document.getElementById('ref-modal-title').textContent = r ? 'Modifier la référence' : 'Nouvelle référence';
   document.getElementById('ref-id').value = r?.id || '';
   document.getElementById('ref-title').value = r?.title || '';
   document.getElementById('ref-author').value = r?.author || '';
@@ -956,9 +967,29 @@ function openRefModal(r) {
   document.getElementById('ref-link').value = r?.link || '';
   document.getElementById('ref-desc').value = r?.description || '';
   document.getElementById('ref-order').value = r?.order_num || 0;
+  // Image preview
+  const preview = document.getElementById('ref-img-preview');
+  if (r?.image_url) { preview.src = r.image_url; preview.style.display = 'block'; }
+  else { preview.src = ''; preview.style.display = 'none'; }
   document.getElementById('ref-modal').classList.add('open');
 }
 function editRef(r) { openRefModal(r); }
+
+async function uploadRefImage(input) {
+  const url = await uploadFile(input.files[0]);
+  if (url) {
+    document.getElementById('ref-image').value = url;
+    const preview = document.getElementById('ref-img-preview');
+    preview.src = url; preview.style.display = 'block';
+  }
+}
+
+// Update preview when URL is typed manually
+document.getElementById('ref-image')?.addEventListener('input', function() {
+  const preview = document.getElementById('ref-img-preview');
+  if (this.value) { preview.src = this.value; preview.style.display = 'block'; }
+  else preview.style.display = 'none';
+});
 
 async function saveRef() {
   const id = document.getElementById('ref-id').value;

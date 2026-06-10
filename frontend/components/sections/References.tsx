@@ -2,7 +2,6 @@ import { Reference } from '@/lib/types';
 import Image from 'next/image';
 
 export default function References({ content, references }: { content: Record<string, string>; references: Reference[] }) {
-  if (references.length === 0) return null;
 
   const books = references.filter(r => r.type === 'book');
   const games = references.filter(r => r.type === 'game');
@@ -16,14 +15,14 @@ export default function References({ content, references }: { content: Record<st
           <span>{icon}</span> {label}
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {items.map((ref, i) => (
-            <div key={ref.id} className={`reveal reveal-delay-${Math.min(i + 1, 4)}`}>
-              {ref.link ? (
-                <a href={ref.link} target="_blank" rel="noopener noreferrer" className="block group">
-                  <RefCard ref={ref} />
+          {items.map((item, i) => (
+            <div key={item.id} className={`reveal reveal-delay-${Math.min(i + 1, 4)}`}>
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" className="block group">
+                  <RefCard item={item} />
                 </a>
               ) : (
-                <RefCard ref={ref} />
+                <RefCard item={item} />
               )}
             </div>
           ))}
@@ -32,14 +31,14 @@ export default function References({ content, references }: { content: Record<st
     );
   }
 
-  function RefCard({ ref }: { ref: Reference }) {
+  function RefCard({ item }: { item: Reference }) {
     return (
       <div className="card-hover bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
         <div className="aspect-[3/4] relative bg-gray-100 overflow-hidden">
-          {ref.image_url ? (
+          {item.image_url ? (
             <Image
-              src={ref.image_url}
-              alt={ref.title}
+              src={item.image_url}
+              alt={item.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               unoptimized
@@ -49,19 +48,19 @@ export default function References({ content, references }: { content: Record<st
               className="absolute inset-0 flex items-center justify-center text-4xl"
               style={{ background: 'var(--color-light)' }}
             >
-              {ref.type === 'book' ? '📖' : '🎲'}
+              {item.type === 'book' ? '📖' : '🎲'}
             </div>
           )}
         </div>
         <div className="p-4">
           <div className="font-900 text-sm leading-tight mb-1" style={{ color: 'var(--color-primary)' }}>
-            {ref.title}
+            {item.title}
           </div>
-          {ref.author && (
-            <div className="text-xs text-gray-500 mb-2">{ref.author}</div>
+          {item.author && (
+            <div className="text-xs text-gray-500 mb-2">{item.author}</div>
           )}
-          {ref.description && (
-            <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">{ref.description}</p>
+          {item.description && (
+            <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">{item.description}</p>
           )}
         </div>
       </div>
@@ -84,9 +83,18 @@ export default function References({ content, references }: { content: Record<st
           <p className="text-gray-500 mt-3 max-w-xl mx-auto">Livres, jeux de société et ressources recommandés par le collectif.</p>
         </div>
 
-        <Group items={books} label="Livres" icon="📚" />
-        <Group items={games} label="Jeux de société" icon="🎲" />
-        <Group items={others} label="Autres ressources" icon="🔗" />
+        {references.length === 0 ? (
+          <div className="text-center py-12 rounded-3xl" style={{ background: 'var(--color-light)' }}>
+            <div className="text-4xl mb-3">📚</div>
+            <p className="text-gray-500">Les références arrivent bientôt !</p>
+          </div>
+        ) : (
+          <>
+            <Group items={books} label="Livres & BD" icon="📚" />
+            <Group items={games} label="Jeux de société" icon="🎲" />
+            <Group items={others} label="Autres ressources" icon="🔗" />
+          </>
+        )}
       </div>
     </section>
   );

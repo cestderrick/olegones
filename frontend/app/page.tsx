@@ -10,6 +10,7 @@ import InstagramFeed from '@/components/sections/InstagramFeed';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/Footer';
 import ScrollReveal from '@/components/ScrollReveal';
+import CookieBanner from '@/components/CookieBanner';
 
 export const revalidate = 60;
 
@@ -37,6 +38,7 @@ export default async function Home() {
       </main>
       <Footer content={content} />
       <ScrollReveal />
+      <CookieBanner />
     </>
   );
 }

@@ -54,7 +54,7 @@ export default function Hero({ content }: { content: Record<string, string> }) {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="#agenda"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-800 text-white text-lg transition-all hover:scale-105 hover:shadow-xl"
+            className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full font-800 text-white text-lg transition-all hover:scale-105 hover:shadow-xl"
             style={{ background: 'var(--color-accent)' }}
           >
             {cta}
@@ -64,7 +64,7 @@ export default function Hero({ content }: { content: Record<string, string> }) {
           </a>
           <a
             href="#methodologie"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-700 text-white text-lg border-2 border-white/50 hover:bg-white/10 transition-all"
+            className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full font-700 text-white text-lg border-2 border-white/50 hover:bg-white/10 transition-all"
           >
             Comment ça marche ?
           </a>

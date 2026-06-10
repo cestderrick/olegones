@@ -55,7 +55,24 @@ export default function Agenda({ content, events }: { content: Record<string, st
                 />
 
                 <div className="flex items-start gap-4">
-                  {/* Date badge */}
+                  {/* Date badge — cliquable si lien Luma */}
+                  {event.link ? (
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-shrink-0 w-16 h-16 rounded-2xl flex flex-col items-center justify-center text-white transition-all hover:scale-110 hover:shadow-lg"
+                      style={{ background: 'var(--color-accent)' }}
+                      title="S'inscrire"
+                    >
+                      <span className="text-xl font-900 leading-none">
+                        {new Date(event.date + 'T00:00:00').getDate()}
+                      </span>
+                      <span className="text-xs font-700 uppercase">
+                        {new Date(event.date + 'T00:00:00').toLocaleDateString('fr-FR', { month: 'short' })}
+                      </span>
+                    </a>
+                  ) : (
                   <div
                     className="flex-shrink-0 w-16 h-16 rounded-2xl flex flex-col items-center justify-center text-white"
                     style={{ background: 'var(--color-primary)' }}
@@ -67,6 +84,7 @@ export default function Agenda({ content, events }: { content: Record<string, st
                       {new Date(event.date + 'T00:00:00').toLocaleDateString('fr-FR', { month: 'short' })}
                     </span>
                   </div>
+                  )}
 
                   <div className="flex-1 min-w-0">
                     <h3 className="font-900 text-lg mb-1 truncate" style={{ color: 'var(--color-primary)' }}>

@@ -2,37 +2,31 @@ require('./db/init'); // init DB first
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const bcrypt = require('bcrypt');
+const crypto = require('crypto'); // built-in Node — zero compilation
 const { requireAuth, signToken } = require('./middleware/auth');
 const { UPLOADS_DIR } = require('./db/init');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://olegones.onrender.com',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
-
-app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) cb(null, true);
-    else cb(null, true); // allow all in dev; tighten in prod if needed
-  },
-  credentials: true,
-}));
-
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use('/admin', express.static(path.join(__dirname, 'public/admin')));
 
+// Constant-time string comparison (no timing attacks, no bcrypt)
+function safeEqual(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 // Auth
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', (req, res) => {
   const { password } = req.body;
   const stored = process.env.ADMIN_PASSWORD || 'olegones2024';
-  const ok = await bcrypt.compare(password, stored).catch(() => password === stored);
-  if (!ok) return res.status(401).json({ error: 'Mot de passe incorrect' });
+  if (!safeEqual(password, stored)) return res.status(401).json({ error: 'Mot de passe incorrect' });
   res.json({ token: signToken() });
 });
 
