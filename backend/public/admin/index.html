@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olegones — Admin</title>
+<style>
+  :root {
+    --primary: #330091;
+    --accent: #ff5e54;
+    --light: #f1fcf6;
+    --bg: #f8f7ff;
+    --card: #ffffff;
+    --border: #e0d9f5;
+    --text: #1a1030;
+    --muted: #6b5b9a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+  }
+  .login-box {
+    background: white;
+    border-radius: 16px;
+    padding: 48px;
+    width: 360px;
+    box-shadow: 0 20px 60px rgba(51,0,145,0.3);
+    text-align: center;
+  }
+  .login-box img { width: 80px; margin-bottom: 24px; }
+  .login-box h1 { font-size: 24px; color: var(--primary); margin-bottom: 8px; }
+  .login-box p { color: var(--muted); margin-bottom: 32px; font-size: 14px; }
+
+  #app { display: none; min-height: 100vh; }
+
+  .sidebar {
+    width: 240px;
+    background: var(--primary);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .sidebar-logo img { width: 120px; }
+  .sidebar-logo span { display: block; color: rgba(255,255,255,0.6); font-size: 11px; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .sidebar nav { padding: 16px 0; flex: 1; }
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .sidebar nav a:hover, .sidebar nav a.active {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-left-color: var(--accent);
+  }
+  .sidebar nav a .icon { font-size: 18px; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .sidebar-footer a {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .sidebar-footer a:hover { color: white; }
+
+  .main {
+    margin-left: 240px;
+    padding: 32px;
+    min-height: 100vh;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  h2 { font-size: 26px; color: var(--primary); margin-bottom: 8px; }
+  .page-desc { color: var(--muted); margin-bottom: 32px; font-size: 14px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .card h3 { font-size: 15px; color: var(--primary); margin-bottom: 16px; font-weight: 600; }
+
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; margin-top: 14px; }
+  label:first-child { margin-top: 0; }
+
+  input[type=text], input[type=email], input[type=date], input[type=time], input[type=number], input[type=url], input[type=password], textarea, select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    transition: border-color 0.15s;
+    font-family: inherit;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  textarea { resize: vertical; min-height: 100px; }
+
+  .color-row { display: flex; align-items: center; gap: 12px; }
+  input[type=color] {
+    width: 48px; height: 40px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 4px;
+    cursor: pointer;
+    background: white;
+  }
+  .color-hex { flex: 1; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-accent { background: var(--accent); color: white; }
+  .btn-accent:hover { opacity: 0.9; }
+  .btn-danger { background: #fee2e2; color: #dc2626; }
+  .btn-danger:hover { background: #dc2626; color: white; }
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
+  .btn-ghost { background: transparent; color: var(--primary); border: 2px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--primary); }
+
+  .save-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-top: 24px;
+  }
+  .save-msg { font-size: 14px; color: #16a34a; font-weight: 500; }
+  .save-err { font-size: 14px; color: #dc2626; font-weight: 500; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 10px 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 2px solid var(--border); }
+  td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .upload-zone:hover { border-color: var(--primary); color: var(--primary); background: var(--bg); }
+  .upload-zone.dragover { border-color: var(--accent); background: rgba(255,94,84,0.05); }
+  .upload-zone .icon { font-size: 32px; margin-bottom: 8px; }
+
+  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 16px; }
+  .media-item { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 2px solid var(--border); cursor: pointer; }
+  .media-item img { width: 100%; height: 100%; object-fit: cover; }
+  .media-item .del { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer; display: none; }
+  .media-item:hover .del { display: block; }
+  .media-item .url-copy { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(51,0,145,0.85); color: white; font-size: 11px; padding: 4px; text-align: center; display: none; word-break: break-all; }
+  .media-item:hover .url-copy { display: block; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    width: 560px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h3 { font-size: 20px; color: var(--primary); margin-bottom: 20px; }
+  .modal-footer { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-book { background: #ede9fe; color: #7c3aed; }
+  .badge-game { background: #fef3c7; color: #d97706; }
+
+  .img-preview {
+    max-width: 200px;
+    max-height: 150px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 2px;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 100%; position: relative; height: auto; }
+    .main { margin-left: 0; padding: 16px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-box">
+    <img src="/uploads/logo.jpg" onerror="this.style.display='none'" alt="Olegones">
+    <h1>Administration</h1>
+    <p>Connectez-vous pour gérer le site Olegones</p>
+    <label>Mot de passe</label>
+    <input type="password" id="pwd-input" placeholder="••••••••" style="margin-bottom:16px">
+    <button class="btn btn-primary" style="width:100%" onclick="login()">Se connecter</button>
+    <div id="login-err" style="color:#dc2626;font-size:13px;margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/uploads/logo.jpg" onerror="this.style.display='none'" alt="">
+      <span>Administration</span>
+    </div>
+    <nav>
+      <a href="#" class="active" onclick="showPage('dashboard',this)"><span class="icon">🏠</span> Tableau de bord</a>
+      <a href="#" onclick="showPage('content',this)"><span class="icon">✏️</span> Contenu</a>
+      <a href="#" onclick="showPage('colors',this)"><span class="icon">🎨</span> Couleurs & Logo</a>
+      <a href="#" onclick="showPage('agenda',this)"><span class="icon">📅</span> Agenda</a>
+      <a href="#" onclick="showPage('documents',this)"><span class="icon">📄</span> Documents</a>
+      <a href="#" onclick="showPage('references',this)"><span class="icon">📚</span> Références</a>
+      <a href="#" onclick="showPage('instagram',this)"><span class="icon">📸</span> Instagram</a>
+      <a href="#" onclick="showPage('media',this)"><span class="icon">🖼️</span> Médiathèque</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" target="_blank">↗ Voir le site</a>
+      <a href="#" onclick="logout()">⬡ Déconnexion</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Dashboard -->
+    <div id="page-dashboard" class="page active">
+      <h2>Tableau de bord</h2>
+      <p class="page-desc">Bienvenue dans l'admin Olegones.</p>
+      <div class="grid-3" id="stats-grid">
+        <div class="card" style="text-align:center">
+          <div style="font-size:32px;color:var(--primary);font-weight:700" id="stat-events">—</div>
+          <div style="color:var(--muted);font-size:14px;margin-top:4px">Ateliers à venir</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:32px;color:var(--primary);font-weight:700" id="stat-docs">—</div>
+          <div style="color:var(--muted);font-size:14px;margin-top:4px">Documents</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:32px;color:var(--primary);font-weight:700" id="stat-refs">—</div>
+          <div style="color:var(--muted);font-size:14px;margin-top:4px">Références</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Accès rapide</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <button class="btn btn-primary" onclick="showPage('agenda',document.querySelector('[onclick*=agenda]'))">+ Ajouter un atelier</button>
+          <button class="btn btn-ghost" onclick="showPage('documents',document.querySelector('[onclick*=documents]'))">+ Ajouter un document</button>
+          <button class="btn btn-ghost" onclick="showPage('references',document.querySelector('[onclick*=references]'))">+ Ajouter une référence</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu -->
+    <div id="page-content" class="page">
+      <h2>Contenu du site</h2>
+      <p class="page-desc">Modifier tous les textes affichés sur le site.</p>
+
+      <div class="card">
+        <h3>Section Hero (bannière principale)</h3>
+        <label>Titre principal</label>
+        <input type="text" data-key="hero.title" placeholder="La contraception masculine...">
+        <label>Sous-titre / description</label>
+        <textarea data-key="hero.subtitle" rows="3"></textarea>
+        <label>Texte du bouton</label>
+        <input type="text" data-key="hero.cta">
+      </div>
+
+      <div class="card">
+        <h3>À propos</h3>
+        <label>Titre</label>
+        <input type="text" data-key="about.title">
+        <label>Texte (sauts de ligne = paragraphes)</label>
+        <textarea data-key="about.text" rows="6"></textarea>
+      </div>
+
+      <div class="card">
+        <h3>Méthodologie</h3>
+        <label>Titre de section</label>
+        <input type="text" data-key="methodology.title">
+        <label>Introduction</label>
+        <textarea data-key="methodology.intro" rows="4"></textarea>
+
+        <div class="grid-2">
+          <div>
+            <label>Étape 1 — Titre</label>
+            <input type="text" data-key="methodology.step1.title">
+            <label>Étape 1 — Texte</label>
+            <textarea data-key="methodology.step1.text" rows="3"></textarea>
+          </div>
+          <div>
+            <label>Étape 2 — Titre</label>
+            <input type="text" data-key="methodology.step2.title">
+            <label>Étape 2 — Texte</label>
+            <textarea data-key="methodology.step2.text" rows="3"></textarea>
+          </div>
+          <div>
+            <label>Étape 3 — Titre</label>
+            <input type="text" data-key="methodology.step3.title">
+            <label>Étape 3 — Texte</label>
+            <textarea data-key="methodology.step3.text" rows="3"></textarea>
+          </div>
+          <div>
+            <label>Étape 4 — Titre</label>
+            <input type="text" data-key="methodology.step4.title">
+            <label>Étape 4 — Texte</label>
+            <textarea data-key="methodology.step4.text" rows="3"></textarea>
+          </div>
+        </div>
+        <label>Note / contre-indications</label>
+        <textarea data-key="methodology.note" rows="3"></textarea>
+      </div>
+
+      <div class="card">
+        <h3>Contact</h3>
+        <div class="grid-2">
+          <div>
+            <label>Email</label>
+            <input type="email" data-key="contact.email">
+            <label>Instagram (URL)</label>
+            <input type="url" data-key="contact.instagram">
+            <label>Instagram (handle)</label>
+            <input type="text" data-key="contact.instagram_handle" placeholder="@olegones">
+          </div>
+          <div>
+            <label>Ville</label>
+            <input type="text" data-key="contact.city">
+            <label>Texte d'introduction</label>
+            <textarea data-key="contact.text" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>SEO — Métadonnées</h3>
+        <div class="grid-2">
+          <div>
+            <label>Nom du site</label>
+            <input type="text" data-key="site.name">
+            <label>Tagline</label>
+            <input type="text" data-key="site.tagline">
+          </div>
+          <div>
+            <label>Description (meta)</label>
+            <textarea data-key="site.description" rows="3"></textarea>
+            <label>Mots-clés (séparés par virgules)</label>
+            <input type="text" data-key="site.keywords">
+          </div>
+        </div>
+      </div>
+
+      <div class="save-bar">
+        <button class="btn btn-primary" onclick="saveContent()">💾 Enregistrer tous les textes</button>
+        <span id="content-msg"></span>
+      </div>
+    </div>
+
+    <!-- Couleurs & Logo -->
+    <div id="page-colors" class="page">
+      <h2>Couleurs & Logo</h2>
+      <p class="page-desc">Personnaliser les couleurs et le logo du site.</p>
+
+      <div class="card">
+        <h3>Palette de couleurs</h3>
+        <label>Couleur principale (violet foncé)</label>
+        <div class="color-row">
+          <input type="color" id="color-primary" value="#330091" oninput="syncColor(this,'color-primary-hex')">
+          <input type="text" id="color-primary-hex" class="color-hex" value="#330091" oninput="syncColorHex(this,'color-primary')" maxlength="7">
+        </div>
+        <label>Couleur secondaire (fond clair)</label>
+        <div class="color-row">
+          <input type="color" id="color-light" value="#f1fcf6" oninput="syncColor(this,'color-light-hex')">
+          <input type="text" id="color-light-hex" class="color-hex" value="#f1fcf6" oninput="syncColorHex(this,'color-light')" maxlength="7">
+        </div>
+        <label>Couleur accent (orange)</label>
+        <div class="color-row">
+          <input type="color" id="color-accent" value="#ff5e54" oninput="syncColor(this,'color-accent-hex')">
+          <input type="text" id="color-accent-hex" class="color-hex" value="#ff5e54" oninput="syncColorHex(this,'color-accent')" maxlength="7">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Logo</h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:16px">Déposez un nouveau logo (PNG ou JPG recommandé, fond transparent pour PNG)</p>
+        <div class="upload-zone" onclick="document.getElementById('logo-input').click()" id="logo-zone">
+          <div class="icon">🖼️</div>
+          <div>Cliquez ou déposez le logo ici</div>
+          <div style="font-size:12px;margin-top:4px">PNG, JPG — max 5 Mo</div>
+        </div>
+        <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="uploadLogo(this)">
+        <div style="margin-top:16px">
+          <label>URL du logo actuel</label>
+          <input type="text" data-key="site.logo_url" id="logo-url-input" placeholder="https://...">
+          <img id="logo-preview" class="img-preview" style="display:none">
+        </div>
+      </div>
+
+      <div class="save-bar">
+        <button class="btn btn-primary" onclick="saveColors()">💾 Enregistrer les couleurs</button>
+        <span id="colors-msg"></span>
+      </div>
+    </div>
+
+    <!-- Agenda -->
+    <div id="page-agenda" class="page">
+      <h2>Agenda</h2>
+      <p class="page-desc">Gérer les prochains ateliers et événements.</p>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button class="btn btn-accent" onclick="openEventModal()">+ Nouvel atelier</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="events-table">
+            <thead><tr><th>Titre</th><th>Date</th><th>Lieu</th><th>Places</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div id="page-documents" class="page">
+      <h2>Documents</h2>
+      <p class="page-desc">Gérer les documents téléchargeables (PDF, fiches, tutoriels).</p>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button class="btn btn-accent" onclick="openDocModal()">+ Nouveau document</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="docs-table">
+            <thead><tr><th>Titre</th><th>Catégorie</th><th>Lien</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Références -->
+    <div id="page-references" class="page">
+      <h2>Références</h2>
+      <p class="page-desc">Livres, jeux de société et autres ressources recommandées.</p>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button class="btn btn-accent" onclick="openRefModal()">+ Nouvelle référence</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="refs-table">
+            <thead><tr><th>Titre</th><th>Auteur·ice</th><th>Type</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instagram -->
+    <div id="page-instagram" class="page">
+      <h2>Carrousel Instagram</h2>
+      <p class="page-desc">Ajouter manuellement des posts Instagram à afficher sur le site.</p>
+      <div class="card">
+        <h3>Ajouter un post</h3>
+        <div class="grid-2">
+          <div>
+            <label>Image</label>
+            <div class="upload-zone" onclick="document.getElementById('ig-img-input').click()" id="ig-zone">
+              <div class="icon">📸</div>
+              <div>Cliquez pour choisir une image</div>
+            </div>
+            <input type="file" id="ig-img-input" accept="image/*" style="display:none" onchange="uploadIgImage(this)">
+            <input type="text" id="ig-image-url" placeholder="Ou coller l'URL de l'image" style="margin-top:8px">
+          </div>
+          <div>
+            <label>Légende</label>
+            <textarea id="ig-caption" rows="4" placeholder="Texte du post..."></textarea>
+            <label>Lien du post Instagram</label>
+            <input type="url" id="ig-link" placeholder="https://www.instagram.com/p/...">
+          </div>
+        </div>
+        <button class="btn btn-accent" style="margin-top:16px" onclick="addIgPost()">+ Ajouter au carrousel</button>
+      </div>
+      <div class="card">
+        <h3>Posts dans le carrousel</h3>
+        <div id="ig-grid" class="media-grid"></div>
+      </div>
+    </div>
+
+    <!-- Médiathèque -->
+    <div id="page-media" class="page">
+      <h2>Médiathèque</h2>
+      <p class="page-desc">Toutes les images et fichiers uploadés. Cliquez sur une image pour copier son URL.</p>
+      <div class="card">
+        <div class="upload-zone" id="media-drop-zone" onclick="document.getElementById('media-input').click()">
+          <div class="icon">⬆️</div>
+          <div>Glisser-déposer ou cliquer pour uploader</div>
+          <div style="font-size:12px;margin-top:4px">Images, PDF — max 10 Mo</div>
+        </div>
+        <input type="file" id="media-input" multiple accept="image/*,application/pdf" style="display:none" onchange="uploadMedia(this)">
+        <div id="media-grid" class="media-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="event-modal">
+  <div class="modal">
+    <h3 id="event-modal-title">Nouvel atelier</h3>
+    <input type="hidden" id="event-id">
+    <label>Titre</label>
+    <input type="text" id="event-title" placeholder="Atelier fabrication d'anneaux contraceptifs">
+    <div class="grid-2">
+      <div><label>Date</label><input type="date" id="event-date"></div>
+      <div><label>Heure</label><input type="time" id="event-time"></div>
+    </div>
+    <label>Lieu</label>
+    <input type="text" id="event-location" placeholder="Lyon 7e — Maison de quartier">
+    <label>Description</label>
+    <textarea id="event-desc" rows="3" placeholder="Atelier ouvert à toutes et tous..."></textarea>
+    <div class="grid-2">
+      <div><label>Nombre de places</label><input type="number" id="event-spots" placeholder="12"></div>
+      <div><label>Lien d'inscription</label><input type="url" id="event-link" placeholder="https://helloasso.com/..."></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('event-modal')">Annuler</button>
+      <button class="btn btn-accent" onclick="saveEvent()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="doc-modal">
+  <div class="modal">
+    <h3 id="doc-modal-title">Nouveau document</h3>
+    <input type="hidden" id="doc-id">
+    <label>Titre</label>
+    <input type="text" id="doc-title" placeholder="Tutoriel — fabrication de l'anneau">
+    <label>Description</label>
+    <textarea id="doc-desc" rows="2" placeholder="Description courte..."></textarea>
+    <label>Fichier (upload ou URL)</label>
+    <div class="upload-zone" onclick="document.getElementById('doc-file-input').click()">
+      <div>Uploader un PDF ou image</div>
+    </div>
+    <input type="file" id="doc-file-input" accept="image/*,application/pdf" style="display:none" onchange="uploadDocFile(this)">
+    <label style="margin-top:8px">URL du fichier</label>
+    <input type="url" id="doc-url" placeholder="https://...">
+    <div class="grid-2" style="margin-top:8px">
+      <div>
+        <label>Catégorie</label>
+        <select id="doc-category">
+          <option value="general">Général</option>
+          <option value="tutorial">Tutoriel</option>
+          <option value="medical">Médical</option>
+          <option value="legal">Juridique</option>
+          <option value="communication">Communication</option>
+        </select>
+      </div>
+      <div><label>Ordre d'affichage</label><input type="number" id="doc-order" value="0"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('doc-modal')">Annuler</button>
+      <button class="btn btn-accent" onclick="saveDoc()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ref-modal">
+  <div class="modal">
+    <h3>Référence</h3>
+    <input type="hidden" id="ref-id">
+    <div class="grid-2">
+      <div>
+        <label>Titre</label>
+        <input type="text" id="ref-title" placeholder="Titre du livre / jeu">
+        <label>Auteur·ice</label>
+        <input type="text" id="ref-author" placeholder="Prénom Nom">
+        <label>Type</label>
+        <select id="ref-type">
+          <option value="book">Livre</option>
+          <option value="game">Jeu de société</option>
+          <option value="other">Autre</option>
+        </select>
+      </div>
+      <div>
+        <label>Image couverture (URL)</label>
+        <input type="url" id="ref-image" placeholder="https://...">
+        <label>Lien d'achat / info</label>
+        <input type="url" id="ref-link" placeholder="https://...">
+        <label>Ordre</label>
+        <input type="number" id="ref-order" value="0">
+      </div>
+    </div>
+    <label>Description</label>
+    <textarea id="ref-desc" rows="3" placeholder="Pourquoi on le recommande..."></textarea>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('ref-modal')">Annuler</button>
+      <button class="btn btn-accent" onclick="saveRef()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';  // same origin
+let TOKEN = localStorage.getItem('olegones_token') || '';
+
+async function api(method, path, body) {
+  const r = await fetch(API + '/api' + path, {
+    method,
+    headers: { 'Content-Type': 'application/json', ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function login() {
+  const pwd = document.getElementById('pwd-input').value;
+  try {
+    const { token } = await api('POST', '/auth/login', { password: pwd });
+    TOKEN = token;
+    localStorage.setItem('olegones_token', token);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    initApp();
+  } catch {
+    document.getElementById('login-err').textContent = 'Mot de passe incorrect.';
+  }
+}
+
+document.getElementById('pwd-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+function logout() {
+  localStorage.removeItem('olegones_token');
+  location.reload();
+}
+
+async function initApp() {
+  if (TOKEN) {
+    try { await api('GET', '/auth/verify'); } catch { logout(); return; }
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+  }
+  loadContent();
+  loadStats();
+}
+
+if (TOKEN) initApp();
+
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  // Lazy load
+  if (name === 'agenda') loadEvents();
+  if (name === 'documents') loadDocs();
+  if (name === 'references') loadRefs();
+  if (name === 'instagram') loadIg();
+  if (name === 'media') loadMedia();
+  return false;
+}
+
+// Content
+let contentData = {};
+async function loadContent() {
+  contentData = await api('GET', '/content');
+  document.querySelectorAll('[data-key]').forEach(el => {
+    if (contentData[el.dataset.key] !== undefined) el.value = contentData[el.dataset.key];
+  });
+  // Colors
+  const cp = contentData['colors.primary'] || '#330091';
+  const cl = contentData['colors.light'] || '#f1fcf6';
+  const ca = contentData['colors.accent'] || '#ff5e54';
+  document.getElementById('color-primary').value = cp;
+  document.getElementById('color-primary-hex').value = cp;
+  document.getElementById('color-light').value = cl;
+  document.getElementById('color-light-hex').value = cl;
+  document.getElementById('color-accent').value = ca;
+  document.getElementById('color-accent-hex').value = ca;
+  // Logo
+  const logoUrl = contentData['site.logo_url'];
+  if (logoUrl) {
+    document.getElementById('logo-url-input').value = logoUrl;
+    const img = document.getElementById('logo-preview');
+    img.src = logoUrl; img.style.display = 'block';
+  }
+}
+
+async function saveContent() {
+  const content = {};
+  document.querySelectorAll('[data-key]').forEach(el => { content[el.dataset.key] = el.value; });
+  try {
+    await api('PUT', '/content', { content });
+    showMsg('content-msg', '✓ Enregistré !', true);
+  } catch { showMsg('content-msg', '✗ Erreur lors de l\'enregistrement', false); }
+}
+
+async function saveColors() {
+  const content = {
+    'colors.primary': document.getElementById('color-primary-hex').value,
+    'colors.light': document.getElementById('color-light-hex').value,
+    'colors.accent': document.getElementById('color-accent-hex').value,
+    'site.logo_url': document.getElementById('logo-url-input').value,
+  };
+  try {
+    await api('PUT', '/content', { content });
+    showMsg('colors-msg', '✓ Couleurs enregistrées !', true);
+  } catch { showMsg('colors-msg', '✗ Erreur', false); }
+}
+
+function syncColor(input, hexId) {
+  document.getElementById(hexId).value = input.value;
+}
+function syncColorHex(input, colorId) {
+  if (/^#[0-9a-fA-F]{6}$/.test(input.value)) document.getElementById(colorId).value = input.value;
+}
+
+async function uploadLogo(input) {
+  const url = await uploadFile(input.files[0]);
+  if (url) {
+    document.getElementById('logo-url-input').value = url;
+    const img = document.getElementById('logo-preview');
+    img.src = url; img.style.display = 'block';
+  }
+}
+
+// Stats
+async function loadStats() {
+  try {
+    const [events, docs, refs] = await Promise.all([
+      api('GET', '/agenda'), api('GET', '/documents'), api('GET', '/references')
+    ]);
+    const now = new Date().toISOString().slice(0,10);
+    document.getElementById('stat-events').textContent = events.filter(e => e.date >= now).length;
+    document.getElementById('stat-docs').textContent = docs.length;
+    document.getElementById('stat-refs').textContent = refs.length;
+  } catch {}
+}
+
+// Events
+async function loadEvents() {
+  const events = await api('GET', '/agenda');
+  const tbody = document.querySelector('#events-table tbody');
+  tbody.innerHTML = events.length ? events.map(e => `
+    <tr>
+      <td><strong>${e.title}</strong></td>
+      <td>${formatDate(e.date)}${e.time ? ' · ' + e.time : ''}</td>
+      <td>${e.location || '—'}</td>
+      <td>${e.spots || '—'}</td>
+      <td style="display:flex;gap:8px;white-space:nowrap">
+        <button class="btn btn-sm btn-ghost" onclick="editEvent(${JSON.stringify(e).replace(/"/g,'&quot;')})">Modifier</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">Supprimer</button>
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px">Aucun atelier planifié</td></tr>';
+}
+
+function openEventModal(e) {
+  document.getElementById('event-modal-title').textContent = e ? 'Modifier l\'atelier' : 'Nouvel atelier';
+  document.getElementById('event-id').value = e?.id || '';
+  document.getElementById('event-title').value = e?.title || '';
+  document.getElementById('event-date').value = e?.date || '';
+  document.getElementById('event-time').value = e?.time || '';
+  document.getElementById('event-location').value = e?.location || '';
+  document.getElementById('event-desc').value = e?.description || '';
+  document.getElementById('event-spots').value = e?.spots || '';
+  document.getElementById('event-link').value = e?.link || '';
+  document.getElementById('event-modal').classList.add('open');
+}
+function editEvent(e) { openEventModal(e); }
+
+async function saveEvent() {
+  const id = document.getElementById('event-id').value;
+  const data = {
+    title: document.getElementById('event-title').value,
+    date: document.getElementById('event-date').value,
+    time: document.getElementById('event-time').value,
+    location: document.getElementById('event-location').value,
+    description: document.getElementById('event-desc').value,
+    spots: parseInt(document.getElementById('event-spots').value) || null,
+    link: document.getElementById('event-link').value,
+  };
+  if (id) await api('PUT', '/agenda/' + id, data);
+  else await api('POST', '/agenda', data);
+  closeModal('event-modal');
+  loadEvents(); loadStats();
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Supprimer cet atelier ?')) return;
+  await api('DELETE', '/agenda/' + id);
+  loadEvents(); loadStats();
+}
+
+// Documents
+async function loadDocs() {
+  const docs = await api('GET', '/documents');
+  const tbody = document.querySelector('#docs-table tbody');
+  tbody.innerHTML = docs.length ? docs.map(d => `
+    <tr>
+      <td><strong>${d.title}</strong>${d.description ? '<br><small style="color:var(--muted)">' + d.description + '</small>' : ''}</td>
+      <td><span class="tag">${d.category}</span></td>
+      <td><a href="${d.file_url}" target="_blank" style="color:var(--primary);font-size:13px">↗ Ouvrir</a></td>
+      <td style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-ghost" onclick="editDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">Modifier</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteDoc(${d.id})">Supprimer</button>
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:32px">Aucun document</td></tr>';
+}
+
+function openDocModal(d) {
+  document.getElementById('doc-modal-title').textContent = d ? 'Modifier le document' : 'Nouveau document';
+  document.getElementById('doc-id').value = d?.id || '';
+  document.getElementById('doc-title').value = d?.title || '';
+  document.getElementById('doc-desc').value = d?.description || '';
+  document.getElementById('doc-url').value = d?.file_url || '';
+  document.getElementById('doc-category').value = d?.category || 'general';
+  document.getElementById('doc-order').value = d?.order_num || 0;
+  document.getElementById('doc-modal').classList.add('open');
+}
+function editDoc(d) { openDocModal(d); }
+
+async function uploadDocFile(input) {
+  const url = await uploadFile(input.files[0]);
+  if (url) document.getElementById('doc-url').value = url;
+}
+
+async function saveDoc() {
+  const id = document.getElementById('doc-id').value;
+  const data = {
+    title: document.getElementById('doc-title').value,
+    description: document.getElementById('doc-desc').value,
+    file_url: document.getElementById('doc-url').value,
+    category: document.getElementById('doc-category').value,
+    order_num: parseInt(document.getElementById('doc-order').value) || 0,
+  };
+  if (id) await api('PUT', '/documents/' + id, data);
+  else await api('POST', '/documents', data);
+  closeModal('doc-modal');
+  loadDocs(); loadStats();
+}
+
+async function deleteDoc(id) {
+  if (!confirm('Supprimer ce document ?')) return;
+  await api('DELETE', '/documents/' + id);
+  loadDocs(); loadStats();
+}
+
+// References
+async function loadRefs() {
+  const refs = await api('GET', '/references');
+  const tbody = document.querySelector('#refs-table tbody');
+  tbody.innerHTML = refs.length ? refs.map(r => `
+    <tr>
+      <td>${r.image_url ? `<img src="${r.image_url}" style="width:40px;height:50px;object-fit:cover;border-radius:4px;vertical-align:middle;margin-right:8px">` : ''}<strong>${r.title}</strong></td>
+      <td>${r.author || '—'}</td>
+      <td><span class="badge badge-${r.type}">${r.type === 'book' ? '📖 Livre' : r.type === 'game' ? '🎲 Jeu' : r.type}</span></td>
+      <td style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-ghost" onclick="editRef(${JSON.stringify(r).replace(/"/g,'&quot;')})">Modifier</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteRef(${r.id})">Supprimer</button>
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:32px">Aucune référence</td></tr>';
+}
+
+function openRefModal(r) {
+  document.getElementById('ref-id').value = r?.id || '';
+  document.getElementById('ref-title').value = r?.title || '';
+  document.getElementById('ref-author').value = r?.author || '';
+  document.getElementById('ref-type').value = r?.type || 'book';
+  document.getElementById('ref-image').value = r?.image_url || '';
+  document.getElementById('ref-link').value = r?.link || '';
+  document.getElementById('ref-desc').value = r?.description || '';
+  document.getElementById('ref-order').value = r?.order_num || 0;
+  document.getElementById('ref-modal').classList.add('open');
+}
+function editRef(r) { openRefModal(r); }
+
+async function saveRef() {
+  const id = document.getElementById('ref-id').value;
+  const data = {
+    title: document.getElementById('ref-title').value,
+    author: document.getElementById('ref-author').value,
+    type: document.getElementById('ref-type').value,
+    image_url: document.getElementById('ref-image').value,
+    link: document.getElementById('ref-link').value,
+    description: document.getElementById('ref-desc').value,
+    order_num: parseInt(document.getElementById('ref-order').value) || 0,
+  };
+  if (id) await api('PUT', '/references/' + id, data);
+  else await api('POST', '/references', data);
+  closeModal('ref-modal');
+  loadRefs(); loadStats();
+}
+
+async function deleteRef(id) {
+  if (!confirm('Supprimer cette référence ?')) return;
+  await api('DELETE', '/references/' + id);
+  loadRefs(); loadStats();
+}
+
+// Instagram
+async function loadIg() {
+  const posts = await api('GET', '/instagram');
+  const grid = document.getElementById('ig-grid');
+  grid.innerHTML = posts.length ? posts.map(p => `
+    <div class="media-item">
+      <img src="${p.image_url}" alt="${p.caption || ''}">
+      <button class="del" onclick="deleteIgPost(${p.id})">✕</button>
+      ${p.post_url ? `<div class="url-copy"><a href="${p.post_url}" target="_blank" style="color:white">↗ Instagram</a></div>` : ''}
+    </div>
+  `).join('') : '<p style="color:var(--muted);font-size:14px">Aucun post ajouté</p>';
+}
+
+async function uploadIgImage(input) {
+  const url = await uploadFile(input.files[0]);
+  if (url) document.getElementById('ig-image-url').value = url;
+}
+
+async function addIgPost() {
+  const image_url = document.getElementById('ig-image-url').value;
+  if (!image_url) return alert('Veuillez fournir une image');
+  await api('POST', '/instagram', {
+    image_url,
+    caption: document.getElementById('ig-caption').value,
+    post_url: document.getElementById('ig-link').value,
+  });
+  document.getElementById('ig-image-url').value = '';
+  document.getElementById('ig-caption').value = '';
+  document.getElementById('ig-link').value = '';
+  loadIg();
+}
+
+async function deleteIgPost(id) {
+  if (!confirm('Retirer ce post ?')) return;
+  await api('DELETE', '/instagram/' + id);
+  loadIg();
+}
+
+// Media
+async function loadMedia() {
+  const files = await api('GET', '/upload');
+  const grid = document.getElementById('media-grid');
+  const images = files.filter(f => !f.name.endsWith('.pdf'));
+  grid.innerHTML = images.length ? images.map(f => `
+    <div class="media-item" onclick="copyUrl('${f.url}')">
+      <img src="${f.url}" alt="${f.name}">
+      <button class="del" onclick="event.stopPropagation();deleteMedia('${f.name}')">✕</button>
+      <div class="url-copy">Copier l'URL</div>
+    </div>
+  `).join('') : '<p style="color:var(--muted);font-size:14px;margin-top:8px">Aucune image uploadée</p>';
+}
+
+async function uploadMedia(input) {
+  for (const file of input.files) await uploadFile(file);
+  loadMedia();
+}
+
+async function deleteMedia(name) {
+  if (!confirm('Supprimer ce fichier ?')) return;
+  await api('DELETE', '/upload/' + name);
+  loadMedia();
+}
+
+function copyUrl(url) {
+  const full = location.origin.replace(':3000','').replace(':4000','') + url;
+  navigator.clipboard.writeText(full).then(() => alert('URL copiée !'));
+}
+
+// Upload helper
+async function uploadFile(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  const r = await fetch('/api/upload', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${TOKEN}` },
+    body: fd,
+  });
+  const data = await r.json();
+  return data.url;
+}
+
+// Helpers
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+function showMsg(id, msg, ok) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = ok ? 'save-msg' : 'save-err';
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+// Drag and drop on upload zone
+['media-drop-zone'].forEach(id => {
+  const zone = document.getElementById(id);
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('dragover');
+    const input = document.getElementById('media-input');
+    // simulate file input — create DataTransfer
+    const dt = e.dataTransfer;
+    if (dt.files.length) uploadMedia({ files: dt.files });
+  });
+});
+</script>
+</body>
+</html>
