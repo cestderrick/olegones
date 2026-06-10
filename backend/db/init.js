@@ -22,6 +22,7 @@ const DEFAULT_CONTENT = {
   'hero.title': 'La contraception masculine, c\'est maintenant.',
   'hero.subtitle': 'Olegones est un collectif lyonnais qui organise des ateliers de fabrication d\'anneaux contraceptifs thermiques. Parce que partager les responsabilités contraceptives, c\'est un enjeu d\'égalité.',
   'hero.cta': 'Voir les prochains ateliers',
+  'hero.cta_link': 'https://luma.com/user/usr-jgdHhYwjfti2ngc',
 
   'about.title': 'Qui sommes-nous ?',
   'about.text': 'Olegones est un collectif basé à Lyon, engagé pour la diffusion de la contraception masculine thermique. Nous organisons des ateliers participatifs pour apprendre à fabriquer et utiliser des anneaux contraceptifs en silicone.\n\nNous croyons que partager les responsabilités contraceptives est un enjeu d\'égalité. L\'information accessible à toutes et tous est la première étape vers ce changement.\n\nNos ateliers sont ouverts à toutes les personnes souhaitant en apprendre plus sur la contraception thermique — que ce soit pour soi ou pour mieux informer son entourage.',
@@ -43,7 +44,7 @@ const DEFAULT_CONTENT = {
 
   'methodology.note': 'Contre-indications : antécédents de cryptorchidie, hernie inguinale ou cancer du testicule, varicocèle de grade 3, obésité importante. Un spermogramme initial (concentration > 15M/mL) est nécessaire avant de débuter.',
 
-  'contact.email': 'olegones@proton.me',
+  'contact.email': 'contraceptiontesticulairelyon@gmail.com',
   'contact.instagram': 'https://www.instagram.com/ole_gones/',
   'contact.instagram_handle': '@ole_gones',
   'contact.city': 'Lyon, France',

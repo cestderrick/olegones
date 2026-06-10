@@ -2,6 +2,7 @@ export default function Hero({ content }: { content: Record<string, string> }) {
   const title = content['hero.title'] || 'La contraception masculine, c\'est maintenant.';
   const subtitle = content['hero.subtitle'] || '';
   const cta = content['hero.cta'] || 'Voir les ateliers';
+  const ctaLink = content['hero.cta_link'] || 'https://luma.com/user/usr-jgdHhYwjfti2ngc';
 
   return (
     <section
@@ -53,7 +54,9 @@ export default function Hero({ content }: { content: Record<string, string> }) {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="#agenda"
+            href={ctaLink}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full font-800 text-white text-lg transition-all hover:scale-105 hover:shadow-xl"
             style={{ background: 'var(--color-accent)' }}
           >

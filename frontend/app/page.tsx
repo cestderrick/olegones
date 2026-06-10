@@ -13,7 +13,7 @@ import Footer from '@/components/Footer';
 import ScrollReveal from '@/components/ScrollReveal';
 import CookieBanner from '@/components/CookieBanner';
 
-export const revalidate = 60;
+export const revalidate = 10;
 
 export default async function Home() {
   const [content, events, documents, references, testimonials, igPosts] = await Promise.all([
