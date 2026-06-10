@@ -82,6 +82,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="ICBM" content="45.7640, 4.8357" />
         <style>{`:root { --color-primary: ${primary}; --color-accent: ${accent}; --color-light: ${light}; }`}</style>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        {/* Umami Analytics — privacy-respecting, no cookies, GDPR-compliant */}
+        {process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL && process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
+          <script
+            defer
+            src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+          />
+        )}
       </head>
       <body>{children}</body>
     </html>

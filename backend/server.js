@@ -1,4 +1,5 @@
 require('./db/init'); // init DB first
+require('./backup'); // auto-backup db.json daily
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -39,6 +40,7 @@ app.use('/api/documents', require('./routes/documents'));
 app.use('/api/references', require('./routes/references'));
 app.use('/api/instagram', require('./routes/instagram'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/testimonials', require('./routes/testimonials'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 

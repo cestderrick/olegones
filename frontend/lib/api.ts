@@ -32,6 +32,14 @@ export async function fetchReferences() {
   } catch { return []; }
 }
 
+export async function fetchTestimonials() {
+  try {
+    const res = await fetch(`${API_URL}/api/testimonials`, { next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    return res.json();
+  } catch { return []; }
+}
+
 export async function fetchInstagram() {
   try {
     const res = await fetch(`${API_URL}/api/instagram?limit=9`, { next: { revalidate: 300 } });

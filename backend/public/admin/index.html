@@ -300,6 +300,7 @@
       <a href="#" onclick="showPage('documents',this)"><span class="icon">📄</span> Documents</a>
       <a href="#" onclick="showPage('references',this)"><span class="icon">📚</span> Références</a>
       <a href="#" onclick="showPage('instagram',this)"><span class="icon">📸</span> Instagram</a>
+      <a href="#" onclick="showPage('testimonials',this)"><span class="icon">⭐</span> Témoignages</a>
       <a href="#" onclick="showPage('media',this)"><span class="icon">🖼️</span> Médiathèque</a>
     </nav>
     <div class="sidebar-footer">
@@ -333,6 +334,7 @@
           <button class="btn btn-primary" onclick="showPage('agenda',document.querySelector('[onclick*=agenda]'))">+ Ajouter un atelier</button>
           <button class="btn btn-ghost" onclick="showPage('documents',document.querySelector('[onclick*=documents]'))">+ Ajouter un document</button>
           <button class="btn btn-ghost" onclick="showPage('references',document.querySelector('[onclick*=references]'))">+ Ajouter une référence</button>
+          <button class="btn btn-ghost" onclick="showPage('testimonials',document.querySelector('[onclick*=testimonials]'))">+ Ajouter un témoignage</button>
         </div>
       </div>
     </div>
@@ -569,6 +571,23 @@
       </div>
     </div>
 
+    <!-- Témoignages -->
+    <div id="page-testimonials" class="page">
+      <h2>Témoignages</h2>
+      <p class="page-desc">Gérer les avis et témoignages affichés sur le site (carrousel).</p>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button class="btn btn-accent" onclick="openTestimonialModal()">+ Nouveau témoignage</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="testimonials-table">
+            <thead><tr><th>Nom</th><th>Rôle</th><th>Avis</th><th>Note</th><th>Visible</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- Médiathèque -->
     <div id="page-media" class="page">
       <h2>Médiathèque</h2>
@@ -692,6 +711,43 @@
   </div>
 </div>
 
+<!-- Testimonial Modal -->
+<div class="modal-overlay" id="testimonial-modal">
+  <div class="modal">
+    <h3 id="testimonial-modal-title">Nouveau témoignage</h3>
+    <input type="hidden" id="testimonial-id">
+    <div class="grid-2">
+      <div>
+        <label>Nom</label>
+        <input type="text" id="testimonial-name" placeholder="Alex R.">
+        <label>Rôle / contexte</label>
+        <input type="text" id="testimonial-role" placeholder="Participant·e — atelier Lyon">
+        <label>Note (1–5)</label>
+        <select id="testimonial-rating">
+          <option value="5">⭐⭐⭐⭐⭐ 5/5</option>
+          <option value="4">⭐⭐⭐⭐ 4/5</option>
+          <option value="3">⭐⭐⭐ 3/5</option>
+          <option value="2">⭐⭐ 2/5</option>
+          <option value="1">⭐ 1/5</option>
+        </select>
+        <label>Visible sur le site</label>
+        <select id="testimonial-visible">
+          <option value="true">✅ Oui — affiché</option>
+          <option value="false">🚫 Non — masqué</option>
+        </select>
+      </div>
+      <div>
+        <label>Témoignage</label>
+        <textarea id="testimonial-content" rows="8" placeholder="Texte du témoignage..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('testimonial-modal')">Annuler</button>
+      <button class="btn btn-accent" onclick="saveTestimonial()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = '';  // same origin
 let TOKEN = localStorage.getItem('olegones_token') || '';
@@ -749,6 +805,7 @@ function showPage(name, el) {
   if (name === 'documents') loadDocs();
   if (name === 'references') loadRefs();
   if (name === 'instagram') loadIg();
+  if (name === 'testimonials') loadTestimonials();
   if (name === 'media') loadMedia();
   return false;
 }
@@ -1050,6 +1107,69 @@ async function deleteIgPost(id) {
   if (!confirm('Retirer ce post ?')) return;
   await api('DELETE', '/instagram/' + id);
   loadIg();
+}
+
+// Testimonials
+async function loadTestimonials() {
+  const items = await api('GET', '/testimonials/all');
+  const tbody = document.querySelector('#testimonials-table tbody');
+  const stars = n => n ? '⭐'.repeat(n) : '—';
+  tbody.innerHTML = items.length ? items.map(t => `
+    <tr>
+      <td><strong>${t.name}</strong></td>
+      <td style="color:var(--muted);font-size:13px">${t.role || '—'}</td>
+      <td style="max-width:280px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">"${t.content}"</td>
+      <td style="white-space:nowrap">${stars(t.rating)}</td>
+      <td>
+        <button class="btn btn-sm ${t.visible !== false ? 'btn-ghost' : 'btn-danger'}" onclick="toggleTestimonialVisible(${t.id}, ${t.visible !== false})">
+          ${t.visible !== false ? '✅ Visible' : '🚫 Masqué'}
+        </button>
+      </td>
+      <td style="display:flex;gap:8px;white-space:nowrap">
+        <button class="btn btn-sm btn-ghost" onclick="editTestimonial(${JSON.stringify(t).replace(/"/g,'&quot;')})">Modifier</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteTestimonial(${t.id})">Supprimer</button>
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">Aucun témoignage</td></tr>';
+}
+
+function openTestimonialModal(t) {
+  document.getElementById('testimonial-modal-title').textContent = t ? 'Modifier le témoignage' : 'Nouveau témoignage';
+  document.getElementById('testimonial-id').value = t?.id || '';
+  document.getElementById('testimonial-name').value = t?.name || '';
+  document.getElementById('testimonial-role').value = t?.role || '';
+  document.getElementById('testimonial-content').value = t?.content || '';
+  document.getElementById('testimonial-rating').value = String(t?.rating || 5);
+  document.getElementById('testimonial-visible').value = String(t?.visible !== false ? 'true' : 'false');
+  document.getElementById('testimonial-modal').classList.add('open');
+}
+function editTestimonial(t) { openTestimonialModal(t); }
+
+async function toggleTestimonialVisible(id, currentlyVisible) {
+  await api('PUT', '/testimonials/' + id, { visible: !currentlyVisible });
+  loadTestimonials();
+}
+
+async function saveTestimonial() {
+  const id = document.getElementById('testimonial-id').value;
+  const data = {
+    name: document.getElementById('testimonial-name').value,
+    role: document.getElementById('testimonial-role').value,
+    content: document.getElementById('testimonial-content').value,
+    rating: parseInt(document.getElementById('testimonial-rating').value),
+    visible: document.getElementById('testimonial-visible').value === 'true',
+  };
+  if (!data.name || !data.content) return alert('Nom et témoignage requis');
+  if (id) await api('PUT', '/testimonials/' + id, data);
+  else await api('POST', '/testimonials', data);
+  closeModal('testimonial-modal');
+  loadTestimonials();
+}
+
+async function deleteTestimonial(id) {
+  if (!confirm('Supprimer ce témoignage ?')) return;
+  await api('DELETE', '/testimonials/' + id);
+  loadTestimonials();
 }
 
 // Media

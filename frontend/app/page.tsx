@@ -1,4 +1,4 @@
-import { fetchContent, fetchEvents, fetchDocuments, fetchReferences, fetchInstagram } from '@/lib/api';
+import { fetchContent, fetchEvents, fetchDocuments, fetchReferences, fetchInstagram, fetchTestimonials } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
@@ -6,6 +6,7 @@ import Agenda from '@/components/sections/Agenda';
 import Methodologie from '@/components/sections/Methodologie';
 import Documents from '@/components/sections/Documents';
 import References from '@/components/sections/References';
+import Testimonials from '@/components/sections/Testimonials';
 import InstagramFeed from '@/components/sections/InstagramFeed';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/Footer';
@@ -15,11 +16,12 @@ import CookieBanner from '@/components/CookieBanner';
 export const revalidate = 60;
 
 export default async function Home() {
-  const [content, events, documents, references, igPosts] = await Promise.all([
+  const [content, events, documents, references, testimonials, igPosts] = await Promise.all([
     fetchContent(),
     fetchEvents(),
     fetchDocuments(),
     fetchReferences(),
+    fetchTestimonials(),
     fetchInstagram(),
   ]);
 
@@ -33,6 +35,7 @@ export default async function Home() {
         <Methodologie content={content} />
         <Documents content={content} documents={documents} />
         <References content={content} references={references} />
+        <Testimonials testimonials={testimonials} />
         {igPosts.length > 0 && <InstagramFeed content={content} posts={igPosts} />}
         <Contact content={content} />
       </main>

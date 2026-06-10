@@ -64,9 +64,12 @@ function saveDB(data) {
 // Init or load
 let _db = loadDB();
 if (!_db) {
-  _db = { content: { ...DEFAULT_CONTENT }, events: [], documents: [], refs: [], instagram: [], _seq: { events: 0, documents: 0, refs: 0, instagram: 0 } };
+  _db = { content: { ...DEFAULT_CONTENT }, events: [], documents: [], refs: [], instagram: [], testimonials: [], _seq: { events: 0, documents: 0, refs: 0, instagram: 0, testimonials: 0 } };
   saveDB(_db);
 }
+// Migrate: add testimonials if missing
+if (!_db.testimonials) _db.testimonials = [];
+if (!_db._seq.testimonials) _db._seq.testimonials = 0;
 
 // Ensure all default content keys exist
 for (const [k, v] of Object.entries(DEFAULT_CONTENT)) {
@@ -107,6 +110,20 @@ if (_db.refs.length === 0) {
   for (const ref of defaultRefs) {
     _db._seq.refs = (_db._seq.refs || 0) + 1;
     _db.refs.push({ ...ref, id: _db._seq.refs, created_at: new Date().toISOString() });
+  }
+}
+
+// Seed default testimonials if empty
+if (_db.testimonials.length === 0) {
+  const defaultTestimonials = [
+    { name: 'Alex R.', role: 'Participant — atelier Lyon', content: 'Super atelier, très bien expliqué et dans une super ambiance. J\'ai appris plein de choses sur la contraception thermique que je ne connaissais pas du tout. Je recommande vraiment !', rating: 5, visible: true },
+    { name: 'Marie L.', role: 'Participante — atelier Lyon', content: 'Venue avec mon partenaire, on est reparti avec un anneau fabriqué et surtout avec toutes les informations nécessaires pour se lancer sereinement. Merci Olegones !', rating: 5, visible: true },
+    { name: 'Jules M.', role: 'Participant — atelier Lyon', content: 'Je cherchais une alternative non-hormonale depuis un moment. L\'atelier m\'a convaincu et démystifié plein d\'idées reçues. L\'équipe est bienveillante et pédagogue.', rating: 5, visible: true },
+    { name: 'Sam D.', role: 'Participant — atelier Lyon', content: 'Très chouette moment collectif. L\'aspect fabrication artisanale est vraiment sympa, on repart avec quelque chose de concret. Hâte de voir les résultats des spermogrammes !', rating: 5, visible: true },
+  ];
+  for (const t of defaultTestimonials) {
+    _db._seq.testimonials = (_db._seq.testimonials || 0) + 1;
+    _db.testimonials.push({ ...t, id: _db._seq.testimonials, created_at: new Date().toISOString() });
   }
 }
 
