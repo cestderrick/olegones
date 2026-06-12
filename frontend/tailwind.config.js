@@ -11,6 +11,10 @@ module.exports = {
       fontFamily: {
         sans: ['Nunito', 'system-ui', 'sans-serif'],
       },
+      fontWeight: {
+        '800': '800',
+        '900': '900',
+      },
       animation: {
         'fade-up': 'fadeUp 0.6s ease forwards',
         'slide-in': 'slideIn 0.5s ease forwards',
