@@ -43,6 +43,17 @@ export default function Home() {
       setTestimonials(test);
       setPosts(p);
       setIgPosts(ig);
+      // Après le chargement des données, forcer la visibilité des .reveal dans le viewport
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight + 100) {
+              el.classList.add('visible');
+            }
+          });
+        });
+      });
     });
   }, []);
 
