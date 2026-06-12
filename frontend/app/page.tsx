@@ -27,34 +27,37 @@ export default function Home() {
   const [igPosts, setIgPosts] = useState([]);
 
   useEffect(() => {
-    Promise.all([
-      fetchContent(),
-      fetchEvents(),
-      fetchDocuments(),
-      fetchReferences(),
-      fetchTestimonials(),
-      fetchPosts(),
-      fetchInstagram(),
-    ]).then(([c, ev, docs, refs, test, p, ig]) => {
-      if (Object.keys(c).length) setContent(c);
-      setEvents(ev);
-      setDocuments(docs);
-      setReferences(refs);
-      setTestimonials(test);
-      setPosts(p);
-      setIgPosts(ig);
-      // Après le chargement des données, forcer la visibilité des .reveal dans le viewport
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight + 100) {
-              el.classList.add('visible');
-            }
-          });
-        });
-      });
-    });
+    let cancelled = false;
+
+    async function loadData(attempt = 1) {
+      try {
+        const [c, ev, docs, refs, test, p, ig] = await Promise.all([
+          fetchContent(),
+          fetchEvents(),
+          fetchDocuments(),
+          fetchReferences(),
+          fetchTestimonials(),
+          fetchPosts(),
+          fetchInstagram(),
+        ]);
+        if (cancelled) return;
+        if (Object.keys(c).length) setContent(c);
+        setEvents(ev);
+        setDocuments(docs);
+        setReferences(refs);
+        setTestimonials(test);
+        setPosts(p);
+        setIgPosts(ig);
+      } catch {
+        // Retry si le backend dormait (cold start Render ~30s)
+        if (!cancelled && attempt < 4) {
+          setTimeout(() => loadData(attempt + 1), attempt * 5000);
+        }
+      }
+    }
+
+    loadData();
+    return () => { cancelled = true; };
   }, []);
 
   const mapProps = {

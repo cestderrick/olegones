@@ -43,6 +43,7 @@ async function start() {
   // Init DB (après restauration éventuelle)
   require('./db/init');
   require('./backup');
+  const { pushToGist } = require('./backup');
 
   const { requireAuth, signToken } = require('./middleware/auth');
   const { UPLOADS_DIR } = require('./db/init');
@@ -59,6 +60,18 @@ async function start() {
     if (bufA.length !== bufB.length) return false;
     return crypto.timingSafeEqual(bufA, bufB);
   }
+
+  // Auto-push Gist après chaque écriture admin
+  app.use((req, res, next) => {
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+      res.on('finish', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          pushToGist().catch(() => {});
+        }
+      });
+    }
+    next();
+  });
 
   app.post('/api/auth/login', (req, res) => {
     const { password } = req.body;

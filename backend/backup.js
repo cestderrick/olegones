@@ -71,4 +71,4 @@ async function runBackup() {
 runBackup();
 setInterval(runBackup, INTERVAL_MS);
 
-module.exports = { runBackup };
+module.exports = { runBackup, pushToGist };
