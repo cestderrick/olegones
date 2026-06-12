@@ -83,7 +83,9 @@ export default function Methodologie({ content }: { content: Record<string, stri
         {/* CTA */}
         <div className="text-center mt-10 reveal">
           <a
-            href="#contact"
+            href={content['hero.cta_link'] || 'https://luma.com/user/usr-jgdHhYwjfti2ngc'}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-800 text-[var(--color-primary)] bg-white text-lg transition-all hover:scale-105 hover:shadow-xl"
           >
             Participer à un atelier
