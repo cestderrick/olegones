@@ -1,3 +1,5 @@
+'use client';
+import { useState, useEffect } from 'react';
 import { fetchContent, fetchEvents, fetchDocuments, fetchReferences, fetchInstagram, fetchTestimonials, fetchPosts } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/sections/Hero';
@@ -15,18 +17,34 @@ import Footer from '@/components/Footer';
 import ScrollReveal from '@/components/ScrollReveal';
 import CookieBanner from '@/components/CookieBanner';
 
-export const revalidate = 10;
+export default function Home() {
+  const [content, setContent] = useState<Record<string, string>>({});
+  const [events, setEvents] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [references, setReferences] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [igPosts, setIgPosts] = useState([]);
 
-export default async function Home() {
-  const [content, events, documents, references, testimonials, posts, igPosts] = await Promise.all([
-    fetchContent(),
-    fetchEvents(),
-    fetchDocuments(),
-    fetchReferences(),
-    fetchTestimonials(),
-    fetchPosts(),
-    fetchInstagram(),
-  ]);
+  useEffect(() => {
+    Promise.all([
+      fetchContent(),
+      fetchEvents(),
+      fetchDocuments(),
+      fetchReferences(),
+      fetchTestimonials(),
+      fetchPosts(),
+      fetchInstagram(),
+    ]).then(([c, ev, docs, refs, test, p, ig]) => {
+      if (Object.keys(c).length) setContent(c);
+      setEvents(ev);
+      setDocuments(docs);
+      setReferences(refs);
+      setTestimonials(test);
+      setPosts(p);
+      setIgPosts(ig);
+    });
+  }, []);
 
   const mapProps = {
     venueName: content['map.venue_name'] || 'Bieristan',
