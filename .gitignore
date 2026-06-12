@@ -1,8 +1,13 @@
 node_modules/
 .next/
+out/
 .env
 .env.local
 *.db
 uploads/
 .DS_Store
 dist/
+
+# Base de données — ne jamais committer, gérée via GitHub Gist sur Render
+data/
+backend/data/
