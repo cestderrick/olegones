@@ -53,7 +53,7 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
                     {/* Quote mark */}
                     <div className="absolute top-4 right-6 text-8xl font-900 leading-none select-none"
                       style={{ color: 'var(--color-primary)', opacity: 0.06 }}>
-                      "
+                      &quot;
                     </div>
                     {/* Stars */}
                     {t.rating && (
@@ -66,7 +66,7 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
                       </div>
                     )}
                     <p className="text-gray-700 text-lg leading-relaxed mb-6 relative z-10">
-                      "{t.content}"
+                      &quot;{t.content}&quot;
                     </p>
                     <div className="flex items-center gap-3">
                       <div
@@ -113,7 +113,7 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
                 aria-label={`Témoignage ${i + 1}`}
                 className="w-2.5 h-2.5 rounded-full transition-all"
                 style={{
-                  background: i === current ? 'var(--color-primary)' : 'var(--color-primary)',
+                  background: 'var(--color-primary)',
                   opacity: i === current ? 1 : 0.25,
                   transform: i === current ? 'scale(1.3)' : 'scale(1)',
                 }}

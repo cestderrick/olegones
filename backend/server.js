@@ -14,7 +14,7 @@ async function restoreFromGistIfNeeded() {
 
   const DATA_DIR = process.env.DATA_DIR ||
     (process.env.NODE_ENV === 'production'
-      ? path.join(__dirname, './data')
+      ? path.join(__dirname, './db/data')   // même chemin que init.js (__dirname/db + ./data)
       : path.join(__dirname, '../../data'));
   const DB_FILE = path.join(DATA_DIR, 'db.json');
 

@@ -40,6 +40,11 @@ export default function Home() {
           fetchInstagram(),
         ]);
         if (cancelled) return;
+        // Si le backend est en veille (cold start), tout revient vide — on réessaie
+        if (Object.keys(c).length === 0 && ev.length === 0 && attempt < 4) {
+          setTimeout(() => loadData(attempt + 1), attempt * 5000);
+          return;
+        }
         if (Object.keys(c).length) setContent(c);
         setEvents(ev);
         setDocuments(docs);
