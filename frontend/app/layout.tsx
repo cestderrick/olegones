@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { fetchContent } from '@/lib/api';
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export async function generateMetadata(): Promise<Metadata> {
   const c = await fetchContent();
   const name = c['site.name'] || 'Olegones';
