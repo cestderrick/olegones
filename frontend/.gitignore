@@ -1,0 +1,4 @@
+tsconfig.tsbuildinfo
+.next/
+out/
+node_modules/
