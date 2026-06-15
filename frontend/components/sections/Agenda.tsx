@@ -27,16 +27,16 @@ export default function Agenda({ content, events }: { content: Record<string, st
         </div>
 
         {upcoming.length === 0 ? (
-          <div className="text-center py-16 rounded-3xl" style={{ background: 'var(--color-light)' }}>
+          <div className="text-center py-16 rounded-3xl" style={{ background: '#f0faf4', border: '2px solid #330091' }}>
             <div className="text-5xl mb-4">📅</div>
-            <p className="text-lg font-700" style={{ color: 'var(--color-primary)' }}>Aucun atelier planifié pour l'instant</p>
-            <p className="text-gray-500 mt-2">Suivez-nous sur Instagram pour être informé·e des prochaines dates !</p>
+            <p className="text-lg font-700" style={{ color: '#330091' }}>Aucun atelier planifié pour l'instant</p>
+            <p className="mt-2" style={{ color: '#555' }}>Suivez-nous sur Instagram pour être informé·e des prochaines dates !</p>
             <a
               href={content['contact.instagram'] || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-6 px-6 py-3 rounded-full font-700 text-white transition-all hover:scale-105"
-              style={{ background: 'var(--color-primary)' }}
+              className="inline-block mt-6 px-6 py-3 rounded-full font-700 transition-all hover:scale-105"
+              style={{ background: '#330091', color: 'white' }}
             >
               Nous suivre sur Instagram
             </a>
@@ -47,7 +47,7 @@ export default function Agenda({ content, events }: { content: Record<string, st
               <div
                 key={event.id}
                 className="card-hover rounded-3xl p-6 border-2 overflow-hidden relative"
-                style={{ borderColor: 'var(--color-primary)', background: 'white' }}
+                style={{ borderColor: '#330091', background: 'white', color: '#1a1030' }}
               >
                 {/* Accent dot */}
                 <div

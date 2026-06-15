@@ -93,6 +93,41 @@ async function start() {
 
   app.get('/api/health', (req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 
+  // Diagnostic Gist — accessible admin uniquement
+  app.get('/api/gist/status', requireAuth, async (req, res) => {
+    const GIST_ID = process.env.GITHUB_GIST_ID;
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    if (!GIST_ID || !GITHUB_TOKEN) {
+      return res.json({
+        configured: false,
+        missing: [!GIST_ID && 'GITHUB_GIST_ID', !GITHUB_TOKEN && 'GITHUB_TOKEN'].filter(Boolean),
+        fix: 'Ajouter ces variables dans Render > votre backend > Environment',
+      });
+    }
+    try {
+      const r = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+        headers: { Authorization: `token ${GITHUB_TOKEN}`, 'User-Agent': 'olegones-backup' },
+      });
+      if (r.ok) {
+        const g = await r.json();
+        return res.json({
+          configured: true, reachable: true,
+          last_updated: g.updated_at,
+          db_json_size_bytes: g.files?.['db.json']?.size || 0,
+        });
+      }
+      return res.json({ configured: true, reachable: false, http_status: r.status });
+    } catch (e) {
+      return res.json({ configured: true, reachable: false, error: e.message });
+    }
+  });
+
+  // Log Gist config au démarrage
+  const gistOk = !!(process.env.GITHUB_GIST_ID && process.env.GITHUB_TOKEN);
+  console.log('[gist] Config:', gistOk
+    ? `✅ Configuré (GIST_ID=${process.env.GITHUB_GIST_ID?.slice(0, 8)}...)`
+    : '⚠️  NON configuré — les données seront perdues à chaque redéploiement !');
+
   app.listen(PORT, () => console.log(`Olegones backend running on :${PORT}`));
 }
 

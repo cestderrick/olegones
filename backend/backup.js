@@ -44,22 +44,29 @@ async function pushToGist() {
   if (!GIST_ID || !GITHUB_TOKEN) return;
   if (!fs.existsSync(DB_FILE)) return;
 
-  try {
-    const content = fs.readFileSync(DB_FILE, 'utf8');
-    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-        'User-Agent': 'olegones-backup',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ files: { 'db.json': { content } } }),
-    });
-    if (res.ok) console.log('[gist] db.json pushé sur GitHub Gist ✓');
-    else console.error('[gist] Erreur push :', res.status, await res.text());
-  } catch (err) {
-    console.error('[gist] Erreur push :', err.message);
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const content = fs.readFileSync(DB_FILE, 'utf8');
+      const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+          'User-Agent': 'olegones-backup',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ files: { 'db.json': { content } } }),
+      });
+      if (res.ok) {
+        console.log(`[gist] ✅ db.json sauvegardé sur Gist (tentative ${attempt})`);
+        return;
+      }
+      console.error(`[gist] ❌ Erreur ${res.status} (tentative ${attempt}) :`, await res.text());
+    } catch (err) {
+      console.error(`[gist] ❌ Erreur réseau (tentative ${attempt}) :`, err.message);
+    }
+    if (attempt < 3) await new Promise(r => setTimeout(r, 2000 * attempt));
   }
+  console.error('[gist] 🚨 ÉCHEC — vérifiez GITHUB_GIST_ID et GITHUB_TOKEN dans Render > Environment.');
 }
 
 // ─── Exécution ────────────────────────────────────────────────────────────────
