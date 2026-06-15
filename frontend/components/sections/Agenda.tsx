@@ -14,7 +14,7 @@ export default function Agenda({ content, events }: { content: Record<string, st
   return (
     <section id="agenda" className="py-20 px-6" style={{ background: 'white' }}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 reveal">
+        <div className="text-center mb-12">
           <span
             className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
             style={{ background: 'var(--color-accent)', color: 'white' }}
@@ -27,7 +27,7 @@ export default function Agenda({ content, events }: { content: Record<string, st
         </div>
 
         {upcoming.length === 0 ? (
-          <div className="reveal text-center py-16 rounded-3xl" style={{ background: 'var(--color-light)' }}>
+          <div className="text-center py-16 rounded-3xl" style={{ background: 'var(--color-light)' }}>
             <div className="text-5xl mb-4">📅</div>
             <p className="text-lg font-700" style={{ color: 'var(--color-primary)' }}>Aucun atelier planifié pour l'instant</p>
             <p className="text-gray-500 mt-2">Suivez-nous sur Instagram pour être informé·e des prochaines dates !</p>
@@ -46,7 +46,7 @@ export default function Agenda({ content, events }: { content: Record<string, st
             {upcoming.map((event, i) => (
               <div
                 key={event.id}
-                className={`reveal reveal-delay-${Math.min(i + 1, 4)} card-hover rounded-3xl p-6 border-2 overflow-hidden relative`}
+                className="card-hover rounded-3xl p-6 border-2 overflow-hidden relative"
                 style={{ borderColor: 'var(--color-primary)', background: 'white' }}
               >
                 {/* Accent dot */}

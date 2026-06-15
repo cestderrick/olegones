@@ -94,7 +94,7 @@ export default function Carte({ venueName, venueAddress, lat, lng, radius }: Car
   return (
     <section id="carte" className="py-20 px-6" style={{ background: 'var(--color-light)' }}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10 reveal">
+        <div className="text-center mb-10">
           <span
             className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
             style={{ background: 'var(--color-primary)', color: 'white' }}
@@ -110,7 +110,7 @@ export default function Carte({ venueName, venueAddress, lat, lng, radius }: Car
         </div>
 
         <div
-          className="reveal rounded-3xl overflow-hidden shadow-lg border-2"
+          className="rounded-3xl overflow-hidden shadow-lg border-2"
           style={{ borderColor: 'var(--color-primary)' }}
         >
           <div

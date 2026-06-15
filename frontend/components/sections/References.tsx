@@ -16,7 +16,7 @@ export default function References({ content, references }: { content: Record<st
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {items.map((item, i) => (
-            <div key={item.id} className={`reveal reveal-delay-${Math.min(i + 1, 4)}`}>
+            <div key={item.id}>
               {item.link ? (
                 <a href={item.link} target="_blank" rel="noopener noreferrer" className="block group">
                   <RefCard item={item} />
@@ -70,7 +70,7 @@ export default function References({ content, references }: { content: Record<st
   return (
     <section id="references" className="py-20 px-6 bg-white">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 reveal">
+        <div className="text-center mb-12">
           <span
             className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
             style={{ background: 'var(--color-accent)', color: 'white' }}

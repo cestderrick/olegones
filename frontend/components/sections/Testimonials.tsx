@@ -30,7 +30,7 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
   return (
     <section id="temoignages" className="py-20 px-6" style={{ background: 'var(--color-light)' }}>
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12 reveal">
+        <div className="text-center mb-12">
           <span className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
             style={{ background: 'var(--color-primary)', color: 'white' }}>
             Ils témoignent

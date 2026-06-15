@@ -36,7 +36,7 @@ export default function Documents({ content, documents }: { content: Record<stri
   return (
     <section id="documents" className="py-20 px-6" style={{ background: 'var(--color-light)' }}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 reveal">
+        <div className="text-center mb-12">
           <span
             className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
             style={{ background: 'var(--color-primary)', color: 'white' }}
@@ -68,7 +68,7 @@ export default function Documents({ content, documents }: { content: Record<stri
                     href={doc.file_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`reveal reveal-delay-${Math.min(i + 1, 4)} card-hover flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm border border-transparent hover:border-[var(--color-primary)] transition-all`}
+                    className="card-hover flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm border border-transparent hover:border-[var(--color-primary)] transition-all"
                   >
                     <FileIcon url={doc.file_url} />
                     <div className="flex-1 min-w-0">

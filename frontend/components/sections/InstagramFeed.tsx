@@ -8,7 +8,7 @@ export default function InstagramFeed({ content, posts }: { content: Record<stri
   return (
     <section id="instagram" className="py-20 px-6" style={{ background: 'var(--color-light)' }}>
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-10 reveal">
+        <div className="flex items-center justify-between mb-10">
           <div>
             <h2 className="text-3xl font-900" style={{ color: 'var(--color-primary)' }}>
               Sur Instagram
@@ -31,7 +31,7 @@ export default function InstagramFeed({ content, posts }: { content: Record<stri
 
         <div className="grid grid-cols-3 gap-3 md:gap-4">
           {posts.slice(0, 9).map((post, i) => (
-            <div key={post.id} className={`reveal reveal-delay-${Math.min((i % 3) + 1, 4)}`}>
+            <div key={post.id}>
               {post.post_url ? (
                 <a href={post.post_url} target="_blank" rel="noopener noreferrer" className="block group">
                   <IgCard post={post} />

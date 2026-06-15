@@ -7,7 +7,7 @@ export default function About({ content }: { content: Record<string, string> }) 
     <section id="about" style={{ background: 'var(--color-light)' }} className="py-20 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="reveal">
+          <div>
             <span
               className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
               style={{ background: 'var(--color-primary)', color: 'white' }}
@@ -22,7 +22,7 @@ export default function About({ content }: { content: Record<string, string> }) 
             ))}
           </div>
 
-          <div className="reveal reveal-delay-2 grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {[
               { icon: '🔬', label: 'Contraception thermique', desc: 'Méthode non-hormonale et réversible' },
               { icon: '🛠️', label: 'Ateliers pratiques', desc: 'Fabriquer son anneau contraceptif' },

@@ -61,11 +61,3 @@ section {
   box-shadow: 0 16px 40px rgba(51, 0, 145, 0.15);
 }
 
-/* Reveal — toujours visible, pas d'animation cachée */
-.reveal,
-.reveal.visible {
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
-  transition: none !important;
-}

@@ -14,7 +14,6 @@ import Carte from '@/components/sections/Carte';
 import InstagramFeed from '@/components/sections/InstagramFeed';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/Footer';
-import ScrollReveal from '@/components/ScrollReveal';
 import CookieBanner from '@/components/CookieBanner';
 
 export default function Home() {
@@ -85,7 +84,6 @@ export default function Home() {
         <Carte {...mapProps} />
       </main>
       <Footer content={content} />
-      <ScrollReveal />
       <CookieBanner />
     </>
   );

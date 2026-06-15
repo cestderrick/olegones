@@ -19,7 +19,7 @@ export default function Actualites({ posts }: { posts: Post[] }) {
   return (
     <section id="actualites" className="py-20 px-6" style={{ background: 'white' }}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 reveal">
+        <div className="text-center mb-12">
           <span
             className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
             style={{ background: 'var(--color-accent)', color: 'white' }}
@@ -35,7 +35,7 @@ export default function Actualites({ posts }: { posts: Post[] }) {
           {visible.map((post, i) => (
             <article
               key={post.id}
-              className={`reveal reveal-delay-${Math.min(i + 1, 4)} rounded-3xl overflow-hidden border-2 card-hover`}
+              className="rounded-3xl overflow-hidden border-2 card-hover"
               style={{ borderColor: 'var(--color-primary)' }}
             >
               {post.image_url && (

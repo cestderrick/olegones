@@ -8,7 +8,7 @@ export default function Contact({ content }: { content: Record<string, string> }
   return (
     <section id="contact" className="py-20 px-6" style={{ background: 'var(--color-primary)' }}>
       <div className="max-w-3xl mx-auto text-center text-white">
-        <div className="reveal">
+        <div>
           <span
             className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-6"
             style={{ background: 'var(--color-accent)' }}
@@ -19,7 +19,7 @@ export default function Contact({ content }: { content: Record<string, string> }
           {text && <p className="text-lg opacity-85 mb-10 leading-relaxed max-w-xl mx-auto">{text}</p>}
         </div>
 
-        <div className="reveal reveal-delay-1 grid md:grid-cols-3 gap-6 mb-10">
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
           {email && (
             <a
               href={`mailto:${email}`}
@@ -78,7 +78,7 @@ export default function Contact({ content }: { content: Record<string, string> }
         </div>
 
         {email && (
-          <div className="reveal reveal-delay-2">
+          <div>
             <a
               href={`mailto:${email}`}
               className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-800 text-[var(--color-primary)] bg-white text-lg transition-all hover:scale-105 hover:shadow-xl"

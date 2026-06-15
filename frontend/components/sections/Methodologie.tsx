@@ -33,7 +33,7 @@ export default function Methodologie({ content }: { content: Record<string, stri
   return (
     <section id="methodologie" className="py-20 px-6" style={{ background: 'var(--color-primary)' }}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 text-white reveal">
+        <div className="text-center mb-12 text-white">
           <span
             className="inline-block text-xs font-800 uppercase tracking-widest px-3 py-1 rounded-full mb-4"
             style={{ background: 'var(--color-accent)' }}
@@ -48,7 +48,7 @@ export default function Methodologie({ content }: { content: Record<string, stri
           {steps.map((step, i) => (
             <div
               key={i}
-              className={`reveal reveal-delay-${i + 1} card-hover rounded-3xl p-6`}
+              className="card-hover rounded-3xl p-6"
               style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
             >
               <div className="flex items-start gap-4">
@@ -70,7 +70,7 @@ export default function Methodologie({ content }: { content: Record<string, stri
 
         {note && (
           <div
-            className="reveal rounded-2xl p-6 text-sm"
+            className="rounded-2xl p-6 text-sm"
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}
           >
             <div className="flex items-start gap-3">
@@ -81,7 +81,7 @@ export default function Methodologie({ content }: { content: Record<string, stri
         )}
 
         {/* CTA */}
-        <div className="text-center mt-10 reveal">
+        <div className="text-center mt-10">
           <a
             href={content['hero.cta_link'] || 'https://luma.com/user/usr-jgdHhYwjfti2ngc'}
             target="_blank"
