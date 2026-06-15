@@ -76,7 +76,8 @@ function saveDB(data) {
 
 // Init or load
 let _db = loadDB();
-if (!_db) {
+// Réinitialiser si la structure est invalide (ex: Gist vide "{}" ou JSON corrompu)
+if (!_db || !_db._seq || !_db.content) {
   _db = { content: { ...DEFAULT_CONTENT }, events: [], documents: [], refs: [], instagram: [], testimonials: [], posts: [], _seq: { events: 0, documents: 0, refs: 0, instagram: 0, testimonials: 0, posts: 0 } };
   saveDB(_db);
 }
