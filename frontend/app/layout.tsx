@@ -14,6 +14,14 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords,
     authors: [{ name }],
     creator: name,
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/favicon-32.png', type: 'image/png', sizes: '32x32' },
+      ],
+      apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+      shortcut: '/favicon.ico',
+    },
     metadataBase: new URL('https://olegones.onrender.com'),
     openGraph: {
       title: name,
